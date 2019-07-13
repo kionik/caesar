@@ -1,0 +1,27 @@
+{
+    "name": "kionik/reactphp-xml",
+    "description": "Xml parser based on ReactPHP",
+    "keywords": ["asynchronous", "ReactPHP", "xml", "reader", "parser", "fast"],
+    "authors": [
+        {
+            "name": "Yuriy Korytko",
+            "email": "yuriy.korytko@gmail.com"
+        }
+    ],
+    "license": "MIT",
+    "require": {
+        "ext-SimpleXML": "*",
+        "ext-libxml": "*",
+
+        "kionik/utils": "*",
+        "react/stream": "^1.1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Kionik\\ReactXml\\": "src/"
+        }
+    }
+}
