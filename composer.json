@@ -1,5 +1,5 @@
 {
-    "name": "kionik/reactphp-xml",
+    "name": "kionik/reactphp-xml-parser",
     "description": "Xml parser based on ReactPHP",
     "keywords": ["asynchronous", "ReactPHP", "xml", "reader", "parser", "fast"],
     "authors": [
