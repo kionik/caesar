@@ -1,17 +1,47 @@
 <?php
 
-namespace Kionik\ReactXml;
+namespace Kionik\Caesar;
 
 use Evenement\EventEmitterInterface;
+use Kionik\Caesar\Parsers\ParsersStorage;
 
+/**
+ * Interface ReaderInterface
+ *
+ * @package Kionik\Caesar
+ */
 interface ReaderInterface extends EventEmitterInterface
 {
     /**
-     * Method should create readable stream and
-     * add subscribers for this stream. Rise 'end' event
-     * on stream end. Start ReactPHP event loop.
+     * Method should read subject and parse it by
+     * parsers. When read is finished call onEnd $listener
+     *
+     * @param string $subject
+     *
+     * @return mixed
+     */
+    public function read($subject);
+
+    /**
+     * Parsers for current reader subject
+     *
+     * @return ParsersStorage
+     */
+    public function parsers(): ParsersStorage;
+
+    /**
+     * Finish event
+     *
+     * @param callable $listener
      *
      * @return void
      */
-    public function read();
+    public function onEnd(callable $listener);
+
+    /**
+     * Method emit 'end' event
+     *
+     * @return void
+     */
+    public function emitEnd();
 }
