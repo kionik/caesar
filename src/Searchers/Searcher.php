@@ -3,6 +3,7 @@
 namespace Kionik\Caesar\Searchers;
 
 use Evenement\EventEmitter;
+use Kionik\Caesar\Handlers\HandlerInterface;
 
 /**
  * Class Searcher
@@ -17,6 +18,11 @@ class Searcher extends EventEmitter implements SearcherInterface
     protected $pattern;
 
     /**
+     * @var HandlerInterface
+     */
+    protected $handler;
+
+    /**
      * @param callable $listener
      */
     public function onFind(callable $listener): void
@@ -29,6 +35,9 @@ class Searcher extends EventEmitter implements SearcherInterface
      */
     public function emitFind(string $searchable): void
     {
+        if ($this->handler)
+            $searchable = $this->handler->handle($searchable);
+
         $this->emit('find', [$searchable]);
     }
 
@@ -58,6 +67,14 @@ class Searcher extends EventEmitter implements SearcherInterface
     public function getPattern(): string
     {
         return $this->pattern;
+    }
+
+    /**
+     * @param HandlerInterface $handler
+     */
+    public function setHandler(HandlerInterface $handler)
+    {
+        $this->handler = $handler;
     }
 
     /**

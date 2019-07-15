@@ -2,15 +2,12 @@
 
 namespace Kionik\Caesar;
 
-use Kionik\Caesar\Parsers\FileParser;
-use Kionik\Caesar\Parsers\ParsersStorage;
 use React\Stream\ReadableResourceStream;
 
 /**
  * Class FileReader
  *
  * @package Kionik\Caesar\Readers
- * @property ParsersStorage<FileParser> $parsers
  */
 class FileReader extends Reader
 {
@@ -24,7 +21,6 @@ class FileReader extends Reader
         $stream = new ReadableResourceStream(fopen($filePath, 'r'), $this->loop);
         $stream->on('data', [$this, 'parse']);
         $stream->on('end', function () { $this->emitEnd(); });
-        $this->run();
     }
 
     /**

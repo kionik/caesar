@@ -3,6 +3,7 @@
 namespace Kionik\Caesar\Searchers;
 
 use Evenement\EventEmitterInterface;
+use Kionik\Caesar\Handlers\HandlerInterface;
 
 /**
  * Interface SearcherInterface
@@ -54,4 +55,11 @@ interface SearcherInterface extends EventEmitterInterface
      * @return string
      */
     public function getPattern();
+
+    /**
+     * @param HandlerInterface $handler
+     *
+     * @return void
+     */
+    public function setHandler(HandlerInterface $handler);
 }

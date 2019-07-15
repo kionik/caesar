@@ -13,7 +13,7 @@
         "php": "^7.1",
         "ext-SimpleXML": "*",
         "ext-libxml": "*",
-
+        "ext-dom": "*",
         "kionik/utils": "*",
         "react/stream": "^1.1.0"
     },

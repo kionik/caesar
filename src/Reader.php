@@ -63,7 +63,7 @@ abstract class Reader extends EventEmitter implements ReaderInterface
     /**
      * Start ReactPHP
      */
-    protected function run(): void
+    public function run(): void
     {
         $this->loop->run();
     }

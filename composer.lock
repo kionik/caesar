@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5d45d9ea91cad4c8e6c8a3f918751ac7",
+    "content-hash": "fd7fd4fc435b93fca4677b928394ae8d",
     "packages": [
         {
             "name": "evenement/evenement",
@@ -51,16 +51,16 @@
         },
         {
             "name": "kionik/utils",
-            "version": "0.1.0",
+            "version": "0.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kionik/utils.git",
-                "reference": "97646a0da4abb6b4d6f6b12a4448fb933183ad33"
+                "reference": "499e27862ba977672bb03fb1830adf357eb9610b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kionik/utils/zipball/97646a0da4abb6b4d6f6b12a4448fb933183ad33",
-                "reference": "97646a0da4abb6b4d6f6b12a4448fb933183ad33",
+                "url": "https://api.github.com/repos/kionik/utils/zipball/499e27862ba977672bb03fb1830adf357eb9610b",
+                "reference": "499e27862ba977672bb03fb1830adf357eb9610b",
                 "shasum": ""
             },
             "require": {
@@ -97,7 +97,7 @@
                 "traits",
                 "utils"
             ],
-            "time": "2019-07-13T11:37:32+00:00"
+            "time": "2019-07-15T20:20:36+00:00"
         },
         {
             "name": "php-ds/php-ds",
@@ -911,16 +911,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "7.5.13",
+            "version": "7.5.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "b9278591caa8630127f96c63b598712b699e671c"
+                "reference": "2834789aeb9ac182ad69bfdf9ae91856a59945ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/b9278591caa8630127f96c63b598712b699e671c",
-                "reference": "b9278591caa8630127f96c63b598712b699e671c",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/2834789aeb9ac182ad69bfdf9ae91856a59945ff",
+                "reference": "2834789aeb9ac182ad69bfdf9ae91856a59945ff",
                 "shasum": ""
             },
             "require": {
@@ -991,7 +991,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-06-19T12:01:51+00:00"
+            "time": "2019-07-15T06:24:08+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -1715,6 +1715,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
+        "php": "^7.1",
         "ext-simplexml": "*",
         "ext-libxml": "*"
     },

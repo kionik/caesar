@@ -2,6 +2,7 @@
 
 namespace Kionik\Caesar\Parsers;
 
+use Kionik\Utils\Interfaces\StorageInterface;
 use Kionik\Utils\Traits\ArrayImitationTrait;
 
 /**
@@ -11,14 +12,14 @@ use Kionik\Utils\Traits\ArrayImitationTrait;
  * @method ParserInterface offsetGet($offset)
  * @method ParserInterface current()
  */
-class ParsersStorage implements \ArrayAccess, \Iterator
+class ParsersStorage implements StorageInterface
 {
     use ArrayImitationTrait;
 
     /**
      * @param ParserInterface $parser
      */
-    public function add(ParserInterface $parser)
+    public function add($parser)
     {
         $this->container[] = $parser;
     }

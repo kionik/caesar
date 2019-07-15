@@ -23,6 +23,5 @@ class StringReader extends Reader
         foreach ($this->parsers as $parser)
             $parser->parse($string);
         $this->emitEnd();
-        $this->run();
     }
 }
