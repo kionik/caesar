@@ -20,7 +20,7 @@ interface ParserInterface extends EventEmitterInterface
      *
      * @return void
      */
-    public function parse(string $subject);
+    public function parse(string $subject): void;
 
     /**
      * @param SearcherInterface $finder

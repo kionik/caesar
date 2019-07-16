@@ -18,7 +18,7 @@ class FileReader extends Reader
      */
     public function read($filePath): void
     {
-        $stream = new ReadableResourceStream(fopen($filePath, 'r'), $this->loop);
+        $stream = new ReadableResourceStream(fopen($filePath, 'rb'), $this->loop);
         $stream->on('data', [$this, 'parse']);
         $stream->on('end', function () { $this->emitEnd(); });
     }
@@ -28,9 +28,10 @@ class FileReader extends Reader
      *
      * @param string $xmlChunk
      */
-    protected function parse(string $xmlChunk)
+    protected function parse(string $xmlChunk): void
     {
-        foreach ($this->parsers as $parser)
+        foreach ($this->parsers as $parser) {
             $parser->parse($xmlChunk);
+        }
     }
 }

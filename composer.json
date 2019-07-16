@@ -1,6 +1,6 @@
 {
     "name": "kionik/caesar",
-    "description": "Asynchronous reader based on ReactPHP",
+    "description": "Asynchronous readers based on ReactPHP",
     "keywords": ["ReactPHP", "asynchronous", "fast", "xml", "reader", "parser"],
     "authors": [
         {

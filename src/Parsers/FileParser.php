@@ -69,18 +69,20 @@ class FileParser extends Parser
      * Method get file chunk from stream, add previous chunks if didn't found
      * something before. Search matches in previous chunks + current chunk.
      *
-     * @param string $chunk
+     * @param string $subject
      */
-    public function parse(string $chunk): void
+    public function parse(string $subject): void
     {
         $this->foundSomething = false;
 
         // If we found no matches in previous chunks, then add previous chunks to current chunk.
         // Else if we found matches, then add previous chunk start part to current chunk
-        if (count($this->previousChunks) > 0)
-            $fullChunk = implode('', $this->previousChunks) . $chunk;
-        else
-            $fullChunk = $this->previousChunkEnd . $chunk;
+        if (count($this->previousChunks) > 0) {
+            $fullChunk = implode('', $this->previousChunks) . $subject;
+        }
+        else {
+            $fullChunk = $this->previousChunkEnd . $subject;
+        }
 
         $this->searcher->search($fullChunk);
 
@@ -101,7 +103,7 @@ class FileParser extends Parser
             $this->shiftFirstChunk();
 
             // If no matches in current chunk, then remember current chunk
-            $this->previousChunks[] = $chunk;
+            $this->previousChunks[] = $subject;
 
                 // Unset previous chunk end, because we already have fill previous chunk
             $this->previousChunkEnd = '';
@@ -113,8 +115,9 @@ class FileParser extends Parser
      */
     protected function shiftFirstChunk(): void
     {
-        if (count($this->previousChunks) > $this->maxChunksCount)
+        if (count($this->previousChunks) > $this->maxChunksCount) {
             array_shift($this->previousChunks);
+        }
     }
 
     /**
@@ -124,7 +127,7 @@ class FileParser extends Parser
      */
     protected function handleSpaceBetweenChunks(string $chunk): void
     {
-        $replacement = uniqid();
+        $replacement = uniqid('xml-chunk-', false);
 
         // Change all find elements to $replacement
         $replacedContent = preg_replace($this->searcher->getPattern(), $replacement, $chunk);

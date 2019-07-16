@@ -19,7 +19,7 @@ interface SearcherInterface extends EventEmitterInterface
      *
      * @return void
      */
-    public function onFind(callable $listener);
+    public function onFind(callable $listener): void;
 
     /**
      * Method should emit 'find' event
@@ -28,7 +28,7 @@ interface SearcherInterface extends EventEmitterInterface
      *
      * @return void
      */
-    public function emitFind(string $searchable);
+    public function emitFind(string $searchable): void;
 
     /**
      * Method make search in subject by pattern and
@@ -54,12 +54,12 @@ interface SearcherInterface extends EventEmitterInterface
      *
      * @return string
      */
-    public function getPattern();
+    public function getPattern(): string;
 
     /**
      * @param HandlerInterface $handler
      *
      * @return void
      */
-    public function setHandler(HandlerInterface $handler);
+    public function setHandler(HandlerInterface $handler): void;
 }

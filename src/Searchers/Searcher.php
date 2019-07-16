@@ -35,8 +35,9 @@ class Searcher extends EventEmitter implements SearcherInterface
      */
     public function emitFind(string $searchable): void
     {
-        if ($this->handler)
+        if ($this->handler) {
             $searchable = $this->handler->handle($searchable);
+        }
 
         $this->emit('find', [$searchable]);
     }
@@ -48,9 +49,11 @@ class Searcher extends EventEmitter implements SearcherInterface
      */
     public function search(string $subject): void
     {
-        if ($matches = $this->getMatches($subject))
-            foreach ($matches as $match)
+        if ($matches = $this->getMatches($subject)) {
+            foreach ($matches as $match) {
                 $this->emitFind($match[0]);
+            }
+        }
     }
 
     /**
@@ -72,7 +75,7 @@ class Searcher extends EventEmitter implements SearcherInterface
     /**
      * @param HandlerInterface $handler
      */
-    public function setHandler(HandlerInterface $handler)
+    public function setHandler(HandlerInterface $handler): void
     {
         $this->handler = $handler;
     }
@@ -86,8 +89,9 @@ class Searcher extends EventEmitter implements SearcherInterface
      */
     protected function getMatches(string $subject): ?array
     {
-        if (preg_match_all($this->pattern, $subject, $matches, PREG_SET_ORDER))
+        if (preg_match_all($this->pattern, $subject, $matches, PREG_SET_ORDER)) {
             return $matches;
+        }
 
         return null;
     }

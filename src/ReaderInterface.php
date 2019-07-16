@@ -36,12 +36,12 @@ interface ReaderInterface extends EventEmitterInterface
      *
      * @return void
      */
-    public function onEnd(callable $listener);
+    public function onEnd(callable $listener): void;
 
     /**
      * Method emit 'end' event
      *
      * @return void
      */
-    public function emitEnd();
+    public function emitEnd(): void;
 }

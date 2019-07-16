@@ -24,8 +24,9 @@ class XmlReader extends FileReader
     {
         $searcher = new TagSearcher($tag);
         $searcher->onFind($listener);
-        if ($handler) 
+        if ($handler) {
             $searcher->setHandler($handler);
+        }
 
         $this->parsers()->add(new FileParser($searcher));
     }

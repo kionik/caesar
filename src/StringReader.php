@@ -20,8 +20,9 @@ class StringReader extends Reader
      */
     public function read($string): void
     {
-        foreach ($this->parsers as $parser)
+        foreach ($this->parsers as $parser) {
             $parser->parse($string);
+        }
         $this->emitEnd();
     }
 }

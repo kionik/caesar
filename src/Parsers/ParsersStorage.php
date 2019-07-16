@@ -30,11 +30,13 @@ class ParsersStorage implements StorageInterface
      */
     public function offsetSet($offset, $parser): void
     {
-        if ($offset !== null)
-            throw new \InvalidArgumentException("Offset must be null, ".gettype($offset)." given");
+        if ($offset !== null) {
+            throw new \InvalidArgumentException('Offset must be null, ' . gettype($offset) . ' given');
+        }
 
-        if (!($parser instanceof ParserInterface))
-            throw new \InvalidArgumentException("Parser must be instance of, " . ParserInterface::class . ". ".gettype($parser)." given");
+        if (!($parser instanceof ParserInterface)) {
+            throw new \InvalidArgumentException('Parser must be instance of, ' . ParserInterface::class . '. ' . gettype($parser) . ' given');
+        }
 
         $this->container[] = $parser;
     }

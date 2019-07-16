@@ -27,8 +27,9 @@ abstract class Handler implements HandlerInterface
      */
     public function handle($subject)
     {
-        if ($this->nextHandler)
+        if ($this->nextHandler) {
             return $this->nextHandler->handle($subject);
+        }
 
         return $subject;
     }
