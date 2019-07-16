@@ -20,7 +20,7 @@ interface ReaderInterface extends EventEmitterInterface
      *
      * @return mixed
      */
-    public function read($subject);
+    public function read(string $subject);
 
     /**
      * Parsers for current reader subject

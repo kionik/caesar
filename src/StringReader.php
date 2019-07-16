@@ -2,14 +2,10 @@
 
 namespace Kionik\Caesar;
 
-use Kionik\Caesar\Parsers\Parser;
-use Kionik\Caesar\Parsers\ParsersStorage;
-
 /**
  * Class XmlReader
  *
  * @package Kionik\ReactExcel\Xml
- * @property ParsersStorage<Parser> $parsers
  */
 class StringReader extends Reader
 {
@@ -18,7 +14,7 @@ class StringReader extends Reader
      *
      * @param string $string
      */
-    public function read($string): void
+    public function read(string $string): void
     {
         foreach ($this->parsers as $parser) {
             $parser->parse($string);

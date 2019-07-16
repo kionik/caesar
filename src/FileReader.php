@@ -16,7 +16,7 @@ class FileReader extends Reader
      *
      * @param string $filePath
      */
-    public function read($filePath): void
+    public function read(string $filePath): void
     {
         $stream = new ReadableResourceStream(fopen($filePath, 'rb'), $this->loop);
         $stream->on('data', [$this, 'parse']);

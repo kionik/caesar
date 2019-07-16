@@ -89,7 +89,7 @@ class Searcher extends EventEmitter implements SearcherInterface
      */
     protected function getMatches(string $subject): ?array
     {
-        if (preg_match_all($this->pattern, $subject, $matches, PREG_SET_ORDER)) {
+        if (preg_match_all($this->getPattern(), $subject, $matches, PREG_SET_ORDER)) {
             return $matches;
         }
 

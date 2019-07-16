@@ -24,5 +24,10 @@
         "psr-4": {
             "Kionik\\Caesar\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Kionik\\Tests\\Caesar\\": "tests/"
+        }
     }
 }
