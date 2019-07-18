@@ -1,6 +1,6 @@
 <?php
 
-namespace Kionik\Tests\Caesar;
+namespace Kionik\Tests\Caesar\Handlers;
 
 use Kionik\Caesar\Handlers\Handler;
 use Kionik\Caesar\Handlers\HandlerInterface;
@@ -27,7 +27,7 @@ class HandlerTest extends TestCase
     }
 
     /**
-     * Test that handler return new value
+     * Testing that handler return new value
      */
     public function testHandle(): void
     {
@@ -35,14 +35,14 @@ class HandlerTest extends TestCase
     }
 
     /**
-     * Test that all handlers will be called
+     * Testing that all handlers will be called
      */
     public function testHandleTwice(): void
     {
         $expected = 'second value';
 
         /** @var MockObject|HandlerInterface $handler2 */
-        $handler2 = $this->getMockBuilder(Handler::class)->setMethods(['handle'])->getMock();
+        $handler2 = $this->createMock(Handler::class);
         $handler2->expects($this->once())->method('handle')->willReturn($expected);
 
         $this->handler->setNext($handler2);

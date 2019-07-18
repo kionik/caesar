@@ -23,6 +23,15 @@ class Searcher extends EventEmitter implements SearcherInterface
     protected $handler;
 
     /**
+     * Searcher constructor.
+     * @param  string  $pattern
+     */
+    public function __construct(string $pattern)
+    {
+        $this->setPattern($pattern);
+    }
+
+    /**
      * @param callable $listener
      */
     public function onFind(callable $listener): void

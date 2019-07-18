@@ -3,7 +3,7 @@
 namespace Kionik\Caesar;
 
 use Kionik\Caesar\Handlers\HandlerInterface;
-use Kionik\Caesar\Parsers\FileParser;
+use Kionik\Caesar\Parsers\ChunkParser;
 use Kionik\Caesar\Searchers\TagSearcher;
 
 /**
@@ -28,6 +28,6 @@ class XmlReader extends FileReader
             $searcher->setHandler($handler);
         }
 
-        $this->parsers()->add(new FileParser($searcher));
+        $this->parsers()->add(new ChunkParser($searcher));
     }
 }

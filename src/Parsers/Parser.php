@@ -38,6 +38,14 @@ class Parser extends EventEmitter implements ParserInterface
     }
 
     /**
+     * @return SearcherInterface
+     */
+    public function getSearcher(): SearcherInterface
+    {
+        return $this->searcher;
+    }
+
+    /**
      * @param string $subject
      */
     public function parse(string $subject): void

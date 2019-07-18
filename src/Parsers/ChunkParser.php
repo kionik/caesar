@@ -9,7 +9,7 @@ use Kionik\Caesar\Searchers\SearcherInterface;
  *
  * @package Kionik\Caesar\Parsers
  */
-class FileParser extends Parser
+class ChunkParser extends Parser
 {
     /**
      * Stores previous chunk, if it doesn't match
@@ -37,51 +37,69 @@ class FileParser extends Parser
      *
      * @var int
      */
-    protected $maxChunksCount = 3;
+    protected $maxNumOfStoredPreviousChunks = 3;
 
     /**
      * @var bool
      */
-    protected $foundSomething;
+    protected $isFound = false;
 
     /**
      * @param SearcherInterface $searcher
      */
     public function setSearcher(SearcherInterface $searcher): void
     {
-        parent::setSearcher($searcher);
+        $this->searcher = $searcher;
         $this->searcher->onFind(function () {
-            $this->foundSomething = true;
+            $this->isFound = true;
         });
+    }
+
+    /**
+     * @return array
+     */
+    public function getPreviousChunks(): array
+    {
+        return $this->previousChunks;
     }
 
     /**
      * Set maximum chunks count, that will check on search pattern
      *
-     * @param int $maxChunksCount
+     * @param int $maxNumOfStoredPreviousChunks
      */
-    public function setMaxChunksCount(int $maxChunksCount): void
+    public function setMaxNumOfStoredPreviousChunks(int $maxNumOfStoredPreviousChunks): void
     {
-        $this->maxChunksCount = $maxChunksCount;
+        $this->maxNumOfStoredPreviousChunks = $maxNumOfStoredPreviousChunks;
+    }
+
+    /**
+     * Get maximum chunks count, that will check on search pattern
+     *
+     * @return int
+     */
+    public function getMaxNumOfStoredPreviousChunks(): int
+    {
+        return $this->maxNumOfStoredPreviousChunks;
     }
 
     /**
      * Method get file chunk from stream, add previous chunks if didn't found
      * something before. Search matches in previous chunks + current chunk.
      *
-     * @param string $subject
+     * @param string $chunk
      */
-    public function parse(string $subject): void
+    public function parse(string $chunk): void
     {
-        $this->foundSomething = false;
+        $this->isFound = false;
 
         // If we found no matches in previous chunks, then add previous chunks to current chunk.
         // Else if we found matches, then add previous chunk start part to current chunk
         if (count($this->previousChunks) > 0) {
-            $fullChunk = implode('', $this->previousChunks) . $subject;
+            $fullChunk = implode('', $this->previousChunks) . $chunk;
         }
         else {
-            $fullChunk = $this->previousChunkEnd . $subject;
+            $fullChunk = $this->previousChunkEnd . $chunk;
         }
 
         $this->searcher->search($fullChunk);
@@ -90,7 +108,7 @@ class FileParser extends Parser
         // Handle previous chunk end part and current chunk start part.
         // Set matches flag to true. Unset previous chunks value.
 
-        if ($this->foundSomething) {
+        if ($this->isFound) {
 
             $this->handleSpaceBetweenChunks($fullChunk);
 
@@ -98,12 +116,12 @@ class FileParser extends Parser
             $this->previousChunks = [];
         } else {
 
+            // If no matches in current chunk, then remember current chunk
+            $this->previousChunks[] = $chunk;
+
             // If we not found matches in $maxChunksCount previous chunks,
             // then we need unset first previous chunk because of memory limit
             $this->shiftFirstChunk();
-
-            // If no matches in current chunk, then remember current chunk
-            $this->previousChunks[] = $subject;
 
                 // Unset previous chunk end, because we already have fill previous chunk
             $this->previousChunkEnd = '';
@@ -115,7 +133,7 @@ class FileParser extends Parser
      */
     protected function shiftFirstChunk(): void
     {
-        if (count($this->previousChunks) > $this->maxChunksCount) {
+        if (count($this->previousChunks) > $this->maxNumOfStoredPreviousChunks) {
             array_shift($this->previousChunks);
         }
     }
@@ -127,7 +145,7 @@ class FileParser extends Parser
      */
     protected function handleSpaceBetweenChunks(string $chunk): void
     {
-        $replacement = uniqid('xml-chunk-', false);
+        $replacement = uniqid('file-chunk-', false);
 
         // Change all find elements to $replacement
         $replacedContent = preg_replace($this->searcher->getPattern(), $replacement, $chunk);

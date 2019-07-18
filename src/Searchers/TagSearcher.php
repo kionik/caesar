@@ -16,6 +16,6 @@ class TagSearcher extends Searcher
      */
     public function __construct(string $searchTag)
     {
-        $this->setPattern("/<\s*?{$searchTag}\b[^>]*>(.*?)<\/{$searchTag}\b[^>]*>/s");
+        parent::__construct("/<\s*?{$searchTag}\b[^>]*>(.*?)<\/{$searchTag}\b[^>]*>/s");
     }
 }

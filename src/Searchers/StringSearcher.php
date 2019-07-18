@@ -16,6 +16,6 @@ class StringSearcher extends Searcher
      */
     public function __construct(string $string)
     {
-        $this->setPattern("/{$string}/");
+        parent::__construct("/{$string}/");
     }
 }

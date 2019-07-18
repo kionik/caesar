@@ -1,14 +1,16 @@
 <?php
 
-namespace Kionik\Tests\Caesar;
+namespace Kionik\Tests\Caesar\Parsers;
 
 use Kionik\Caesar\Handlers\Handler;
 use Kionik\Caesar\Handlers\HandlerInterface;
 use Kionik\Caesar\Searchers\Searcher;
+use Kionik\Caesar\Searchers\SearcherInterface;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
+use Mockery\Mock;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class SearcherTest extends TestCase
+class SearcherTest extends MockeryTestCase
 {
     /**
      * @var Searcher
@@ -22,22 +24,41 @@ class SearcherTest extends TestCase
 
     public function setUp()
     {
-        $this->searcher = new Searcher();
+        $this->searcher = new Searcher('/' . $this->searchable. '/');
     }
 
     /**
-     * Test listener subscribing on 'find' event
+     * Testing that listener is subscribing on 'find' event.
+     * Testing that if we subscribe new one listener on 'find' method
+     * it will append to listeners
+     * Testing that searcher will call each listener if it find something
+     * Testing that searcher never call other listeners
      */
     public function testOnFind(): void
     {
-        $listener = function () {};
-        $this->searcher->onFind($listener);
+        $listener1 = \Mockery::mock(\stdClass::class);
+        $listener1->shouldReceive('wakeUp')->once();
+        $this->searcher->onFind([$listener1, 'wakeUp']);
         $listeners = $this->searcher->listeners('find');
-        $this->assertEquals($listener, array_pop($listeners));
+        $this->assertCount(1, $listeners);
+
+        $listener2 = \Mockery::mock(\stdClass::class);
+        $listener2->shouldReceive('wakeUp')->once();
+        $this->searcher->onFind([$listener2, 'wakeUp']);
+        $listeners = $this->searcher->listeners('find');
+        $this->assertCount(2, $listeners);
+
+        $listener3 = \Mockery::mock(\stdClass::class);
+        $listener3->shouldNotReceive('wakeUp');
+        $this->searcher->on('notFind', [$listener3, 'wakeUp']);
+        $listeners = $this->searcher->listeners('find');
+        $this->assertCount(2, $listeners);
+
+        $this->searcher->emitFind('test');
     }
 
     /**
-     * Test that send searchable is equal to first param in listener
+     * Testing that send searchable by emitFind is equal to first param in listener
      */
     public function testEmitFind(): void
     {
@@ -48,14 +69,15 @@ class SearcherTest extends TestCase
     }
 
     /**
-     * Test that after handling value, searcher will return new value
+     * Testing that if searcher has handler, then handler will
+     * handle value and return a new result
      */
     public function testEmitFindWithHandler(): void
     {
         $newValue = 'new test';
 
         /** @var HandlerInterface|MockObject $handler */
-        $handler = $this->getMockBuilder(Handler::class)->setMethods(['handle'])->getMock();
+        $handler = $this->createMock(Handler::class);
         $handler->expects($this->once())->method('handle')->willReturn($newValue);
 
         $this->searcher->setHandler($handler);
@@ -66,15 +88,14 @@ class SearcherTest extends TestCase
     }
 
     /**
-     * Test that search method find needle results
+     * Testing that search method will find match and it will be correct
      *
      * @dataProvider searchProvider
      * @param string $text
      */
     public function testSearch(string $text): void
     {
-        $pattern = '/'.$this->searchable.'/';
-        $this->searcher->setPattern($pattern);
+        $pattern = $this->searcher->getPattern();
         $this->searcher->onFind(function ($param) use ($pattern) {
             $this->assertRegExp($pattern, $param);
             $this->assertEquals($this->searchable, $param);
@@ -95,22 +116,18 @@ class SearcherTest extends TestCase
     }
 
     /**
-     * Test that search method NOT find results
+     * Testing that search method NOT found any matches
      *
      * @dataProvider notSearchProvider
      * @param string $text
      */
     public function testNotSearch(string $text): void
     {
-        $findCounter = 0;
-
-        $pattern = '/'.$this->searchable.'/';
-        $this->searcher->setPattern($pattern);
-        $this->searcher->onFind(static function () use (&$findCounter) {
-            $findCounter++;
-        });
-        $this->searcher->search($text);
-        $this->assertEquals(0, $findCounter);
+        /** @var SearcherInterface|Mock $searcher */
+        $searcher = \Mockery::mock(Searcher::class)->makePartial();
+        $searcher->shouldNotReceive('emitFind');
+        $searcher->setPattern('/' . $this->searchable . '/');
+        $searcher->search($text);
     }
 
     /**
@@ -129,7 +146,7 @@ class SearcherTest extends TestCase
     }
 
     /**
-     * Test that search find all matches
+     * Testing that search find all matches
      *
      * @dataProvider searchMatchesProvider
      * @param string $text
@@ -137,15 +154,11 @@ class SearcherTest extends TestCase
      */
     public function testSearchMatchesCount(string $text, int $expectedCount): void
     {
-        $findCounter = 0;
-
-        $pattern = '/'.$this->searchable.'/';
-        $this->searcher->setPattern($pattern);
-        $this->searcher->onFind(static function () use (&$findCounter) {
-            $findCounter++;
-        });
-        $this->searcher->search($text);
-        $this->assertEquals($expectedCount, $findCounter);
+        /** @var SearcherInterface|Mock $searcher */
+        $searcher = \Mockery::mock(Searcher::class)->makePartial();
+        $searcher->shouldReceive('emitFind')->times($expectedCount);
+        $searcher->setPattern('/' . $this->searchable . '/');
+        $searcher->search($text);
     }
 
     /**

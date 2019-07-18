@@ -1,6 +1,6 @@
 <?php
 
-namespace Kionik\Tests\Caesar;
+namespace Kionik\Tests\Caesar\Parsers;
 
 use Kionik\Caesar\Parsers\Parser;
 use Kionik\Caesar\Searchers\Searcher;
@@ -16,7 +16,7 @@ class ParserTest extends TestCase
     public function testParse(): void
     {
         /** @var MockObject|SearcherInterface $searcher */
-        $searcher = $this->getMockBuilder(Searcher::class)->getMock();
+        $searcher = $this->createMock(Searcher::class);
         $searcher->expects($this->atLeastOnce())->method('search');
         $parser = new Parser($searcher);
         $parser->parse('some test');
