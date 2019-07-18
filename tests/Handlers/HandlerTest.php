@@ -4,10 +4,10 @@ namespace Kionik\Tests\Caesar\Handlers;
 
 use Kionik\Caesar\Handlers\Handler;
 use Kionik\Caesar\Handlers\HandlerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
+use Mockery\Mock;
 
-class HandlerTest extends TestCase
+class HandlerTest extends MockeryTestCase
 {
     /**
      * @var HandlerInterface
@@ -41,9 +41,9 @@ class HandlerTest extends TestCase
     {
         $expected = 'second value';
 
-        /** @var MockObject|HandlerInterface $handler2 */
-        $handler2 = $this->createMock(Handler::class);
-        $handler2->expects($this->once())->method('handle')->willReturn($expected);
+        /** @var Mock|HandlerInterface $handler2 */
+        $handler2 = \Mockery::mock(Handler::class);
+        $handler2->shouldReceive('handle')->once()->andReturn($expected);
 
         $this->handler->setNext($handler2);
         $result = $this->handler->handle('value');

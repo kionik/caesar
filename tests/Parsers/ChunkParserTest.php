@@ -51,7 +51,7 @@ class ChunkParserTest extends MockeryTestCase
      * @param int $storedChunks
      * @dataProvider betweenChunksProvider
      */
-    public function testParseBetweenChunks(array $chunks, int $expectedFound, int $storedChunks = 1): void
+    public function testParseBetweenChunks(array $chunks, int $expectedFound, int $storedChunks): void
     {
         $this->searcher->shouldReceive('emitFind')->times($expectedFound)->andReturnUsing(function () {
             $isFoundProperty = new \ReflectionProperty($this->parser, 'isFound');
@@ -66,14 +66,11 @@ class ChunkParserTest extends MockeryTestCase
         }
     }
 
-    /**
-     * @return array
-     */
     public function betweenChunksProvider(): array
     {
         return [
-            [['first te', 'st second tes', 't third test'], 3],
-            [['tes', 'test'], 1],
+            [['first te', 'st second tes', 't third test'], 3, 1],
+            [['tes', 'test'], 1, 1],
             [['t', 'e', 's', 'test', 'est', 'test'], 3, 3],
             [['t', '', 'e', '', 's', '', 't', 'test', 'est'], 2, 7],
         ];
@@ -81,10 +78,13 @@ class ChunkParserTest extends MockeryTestCase
 
     /**
      * Testing that parser stores necessary count of previous chunks
+     *
+     * @param array $chunks
+     *
+     * @dataProvider countPreviousChunksProvider
      */
-    public function testCountPreviousChunks(): void
+    public function testCountPreviousChunks(array $chunks): void
     {
-        $chunks = ['not match', 'not match', 'not match', 'not match', 'not match'];
         $this->parser->setMaxNumOfStoredPreviousChunks(5);
 
         foreach ($chunks as $chunk) {
@@ -93,5 +93,77 @@ class ChunkParserTest extends MockeryTestCase
 
         $this->assertCount(count($chunks), $this->parser->getPreviousChunks());
         $this->assertEquals(implode('', $chunks), implode('', $this->parser->getPreviousChunks()));
+    }
+
+    public function countPreviousChunksProvider(): array
+    {
+        return [
+            [['not match', 'not match', 'not match', 'not match', 'not match']],
+            [['not match', 'not match', 'not match', 'not match']],
+            [['not match', 'not match', 'not match']],
+            [['not match', 'not match']],
+            [['not match']],
+        ];
+    }
+
+    /**
+     * Testing that parser doesn't stored more than maximum number of previous chunks
+     *
+     * @param array $chunks
+     * @param int $storedChunks
+     *
+     * @dataProvider countPreviousChunksNegativeProvider
+     */
+    public function testCountPreviousChunksNegative(array $chunks, int $storedChunks): void
+    {
+        $this->parser->setMaxNumOfStoredPreviousChunks($storedChunks);
+
+        foreach ($chunks as $chunk) {
+            $this->parser->parse($chunk);
+        }
+
+        $this->assertCount($storedChunks, $this->parser->getPreviousChunks());
+        $this->assertNotEquals(implode('', $chunks), implode('', $this->parser->getPreviousChunks()));
+    }
+
+    public function countPreviousChunksNegativeProvider(): array
+    {
+        return [
+            [['n', 'o', 't', 'm', 'a', 't', 'c', 'h'], 4],
+            [['n', 'o', 't', 'm', 'a', 't', 'c', 'h'], 3],
+            [['n', 'o', 't', 'm', 'a', 't', 'c', 'h'], 2],
+            [['n', 'o', 't', 'm', 'a', 't', 'c', 'h'], 1],
+            [['n', 'o', 't', 'm', 'a', 't', 'c', 'h'], 0],
+        ];
+    }
+
+    /**
+     * Testing that parser reset previous chunks to [] if searcher found matches
+     *
+     * @param array $chunks
+     * @param int $expectedCount
+     *
+     * @dataProvider resetPreviousChunksProvider
+     */
+    public function testResetPreviousChunks(array $chunks, int $expectedCount): void
+    {
+        $this->parser->setMaxNumOfStoredPreviousChunks(3);
+
+        foreach ($chunks as $chunk) {
+            $this->parser->parse($chunk);
+        }
+
+        $this->assertCount($expectedCount, $this->parser->getPreviousChunks());
+    }
+
+    public function resetPreviousChunksProvider(): array
+    {
+        return [
+            [['not match', 'match test'], 0],
+            [['not match', 'match test', 'not match', 'match test'], 0],
+            [['not match', 'match test', 'not match'], 1],
+            [['not match', 'match test', 'not match', 'not match'], 2],
+            [['not match', 'match test', 'not match', 'not match', 'not match'], 3],
+        ];
     }
 }
