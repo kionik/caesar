@@ -26,13 +26,6 @@ class ChunkParser extends Parser
     protected $previousChunkEnd = '';
 
     /**
-     * Stores current chunk start part, if it does match
-     *
-     * @var string
-     */
-    protected $currentChunkStart = '';
-
-    /**
      * Maximum chunks count, that will store in $previousChunks
      *
      * @var int
@@ -110,10 +103,10 @@ class ChunkParser extends Parser
 
         if ($this->isFound) {
 
-            $this->handleSpaceBetweenChunks($fullChunk);
-
             // Unset previous chunks, because we have already filled previousChunkEnd
             $this->previousChunks = [];
+
+            $this->handleSpaceBetweenChunks($fullChunk);
         } else {
 
             // If no matches in current chunk, then remember current chunk
@@ -152,10 +145,8 @@ class ChunkParser extends Parser
 
         // If previous chunk matches, then get current chunk start part.
         // Try to match part between last found tag in previous chunk and first found tag in current chunk.
-        if (count($this->previousChunks) === 0) {
-            $this->currentChunkStart = $this->getChunkStart($replacedContent, $replacement);
-            $this->searcher->search($this->previousChunkEnd . $this->currentChunkStart);
-        }
+        $currentChunkStart = $this->getChunkStart($replacedContent, $replacement);
+        $this->searcher->search($this->previousChunkEnd . $currentChunkStart);
 
         // Remember current chunk end part for the next chunk
         $this->previousChunkEnd = $this->getChunkEnd($replacedContent, $replacement);

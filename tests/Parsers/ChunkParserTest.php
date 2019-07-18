@@ -73,6 +73,9 @@ class ChunkParserTest extends MockeryTestCase
             [['tes', 'test'], 1, 1],
             [['t', 'e', 's', 'test', 'est', 'test'], 3, 3],
             [['t', '', 'e', '', 's', '', 't', 'test', 'est'], 2, 7],
+            [['match test te', 'st and now match test or new t', 'est or tes', 't'], 5, 1],
+            [['test test test ', 'test t', 'est te', 'st test tes', 't'], 8, 1],
+            [['test test test ', 'not found', 'and start te', 'st'], 4, 2]
         ];
     }
 
@@ -165,5 +168,29 @@ class ChunkParserTest extends MockeryTestCase
             [['not match', 'match test', 'not match', 'not match'], 2],
             [['not match', 'match test', 'not match', 'not match', 'not match'], 3],
         ];
+    }
+
+    /**
+     * Testing that when we found match, in previous chunk,
+     * we will correctly save previous chunk end.
+     * Testing that if we not found match in previous chunk, it should be empty
+     *
+     * @throws \ReflectionException
+     */
+    public function testSavingOfPreviousChunkEnd(): void
+    {
+        $chunks = ['find match test then catch this', 'find new match ', ' test last chunk'];
+
+        $chunkEndProperty = new \ReflectionProperty($this->parser, 'previousChunkEnd');
+        $chunkEndProperty->setAccessible(true);
+
+        $this->parser->parse($chunks[0]);
+        $this->assertEquals(' then catch this', $chunkEndProperty->getValue($this->parser));
+
+        $this->parser->parse($chunks[1]);
+        $this->assertEquals('', $chunkEndProperty->getValue($this->parser));
+
+        $this->parser->parse($chunks[2]);
+        $this->assertEquals(' last chunk', $chunkEndProperty->getValue($this->parser));
     }
 }
