@@ -31,7 +31,9 @@ class FileReader extends Reader
     protected function parse(string $xmlChunk): void
     {
         foreach ($this->parsers as $parser) {
-            $parser->parse($xmlChunk);
+            $this->loop->futureTick(function () use ($parser, $xmlChunk) {
+                $parser->parse($xmlChunk);
+            });
         }
     }
 }

@@ -2,8 +2,12 @@
 
 namespace Kionik\Caesar;
 
+use Ds\Set;
 use Evenement\EventEmitter;
-use Kionik\Caesar\Parsers\ParsersStorage;
+use Kionik\Caesar\Handlers\HandlerInterface;
+use Kionik\Caesar\Parsers\Parser;
+use Kionik\Caesar\Searchers\Searcher;
+use Kionik\Caesar\Searchers\SearcherInterface;
 use React\EventLoop\LoopInterface;
 
 /**
@@ -14,7 +18,7 @@ use React\EventLoop\LoopInterface;
 abstract class Reader extends EventEmitter implements ReaderInterface
 {
     /**
-     * @var ParsersStorage
+     * @var Set
      */
     protected $parsers;
 
@@ -24,13 +28,21 @@ abstract class Reader extends EventEmitter implements ReaderInterface
     protected $loop;
 
     /**
+     * Default searcher class.
+     * Need for onFind event
+     *
+     * @var string
+     */
+    protected $defaultSearcher = Searcher::class;
+
+    /**
      * Reader constructor.
      *
      * @param LoopInterface $loop
      */
     public function __construct(LoopInterface $loop)
     {
-        $this->parsers = new ParsersStorage();
+        $this->parsers = new Set();
         $this->loop = $loop;
     }
 
@@ -53,18 +65,57 @@ abstract class Reader extends EventEmitter implements ReaderInterface
     }
 
     /**
-     * @return ParsersStorage
+     * @return Set
      */
-    public function parsers(): ParsersStorage
+    public function parsers(): Set
     {
         return $this->parsers;
     }
 
     /**
-     * Start ReactPHP
+     * Add search pattern and subscribe $listener to find
+     * event. $listener will called when searcher find something
+     * by pattern
+     *
+     * @param  string  $pattern
+     * @param  callable  $listener
+     *
+     * @return mixed|void
      */
-    public function run(): void
+    public function onFind(string $pattern, callable $listener): self
     {
-        $this->loop->run();
+        /** @var SearcherInterface $searcher */
+        $searcher = new $this->defaultSearcher($pattern);
+        $searcher->onFind($listener);
+        $this->parsers()->add(new Parser($searcher));
+
+        return $this;
+    }
+
+    /**
+     * Add handler to last added searcher
+     *
+     * @param  HandlerInterface  $handler
+     *
+     * @return Reader
+     * @throws \RuntimeException
+     */
+    public function handler(HandlerInterface $handler): self
+    {
+        if ($this->parsers->isEmpty()) {
+            throw new \RuntimeException('Can\'t add handler to empty parser');
+        }
+
+        /** @var Parser $parser */
+        $parser = $this->parsers->last();
+
+        $searcherHandler = $parser->getSearcher()->getHandler();
+        if ($searcherHandler !== null) {
+            $searcherHandler->setNext($handler);
+        } else {
+            $parser->getSearcher()->setHandler($handler);
+        }
+
+        return $this;
     }
 }

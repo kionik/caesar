@@ -4,6 +4,11 @@ namespace Kionik\Caesar\Handlers\Xml;
 
 use Kionik\Caesar\Handlers\Handler;
 
+/**
+ * Class SimpleXMLElementHandler
+ *
+ * @package Kionik\Caesar\Handlers\Xml
+ */
 class SimpleXMLElementHandler extends Handler
 {
     /**

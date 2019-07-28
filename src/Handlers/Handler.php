@@ -2,6 +2,11 @@
 
 namespace Kionik\Caesar\Handlers;
 
+/**
+ * Class Handler
+ *
+ * @package Kionik\Caesar\Handlers
+ */
 abstract class Handler implements HandlerInterface
 {
     /**

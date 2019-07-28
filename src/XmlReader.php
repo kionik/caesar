@@ -2,8 +2,6 @@
 
 namespace Kionik\Caesar;
 
-use Kionik\Caesar\Handlers\HandlerInterface;
-use Kionik\Caesar\Parsers\ChunkParser;
 use Kionik\Caesar\Searchers\TagSearcher;
 
 /**
@@ -14,20 +12,18 @@ use Kionik\Caesar\Searchers\TagSearcher;
 class XmlReader extends FileReader
 {
     /**
-     * Describe on 'find' tag event
-     *
-     * @param string $tag
-     * @param callable $listener
-     * @param HandlerInterface $handler
+     * @var string
      */
-    public function onTag(string $tag, callable $listener, ?HandlerInterface $handler = null): void
-    {
-        $searcher = new TagSearcher($tag);
-        $searcher->onFind($listener);
-        if ($handler) {
-            $searcher->setHandler($handler);
-        }
+    protected $defaultSearcher = TagSearcher::class;
 
-        $this->parsers()->add(new ChunkParser($searcher));
+    /**
+     * @param  string  $tag
+     * @param  callable  $listener
+     *
+     * @return Reader
+     */
+    public function onFind(string $tag, callable $listener): Reader
+    {
+        return parent::onFind($tag, $listener);
     }
 }

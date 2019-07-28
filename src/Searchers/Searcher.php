@@ -90,6 +90,14 @@ class Searcher extends EventEmitter implements SearcherInterface
     }
 
     /**
+     * @return HandlerInterface
+     */
+    public function getHandler(): ?HandlerInterface
+    {
+        return $this->handler;
+    }
+
+    /**
      * Get matches in chunk by pattern
      *
      * @param string $subject

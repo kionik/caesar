@@ -2,8 +2,9 @@
 
 namespace Kionik\Caesar;
 
+use Ds\Set;
 use Evenement\EventEmitterInterface;
-use Kionik\Caesar\Parsers\ParsersStorage;
+use Kionik\Caesar\Handlers\HandlerInterface;
 
 /**
  * Interface ReaderInterface
@@ -25,9 +26,9 @@ interface ReaderInterface extends EventEmitterInterface
     /**
      * Parsers for current reader subject
      *
-     * @return ParsersStorage
+     * @return Set
      */
-    public function parsers(): ParsersStorage;
+    public function parsers(): Set;
 
     /**
      * Finish event
@@ -44,4 +45,25 @@ interface ReaderInterface extends EventEmitterInterface
      * @return void
      */
     public function emitEnd(): void;
+
+    /**
+     * Method should create Searcher by pattern.
+     * Add to searcher onFind event current $listener.
+     * Add this searcher into Parser and add it into parsers.
+     *
+     * @param  string  $pattern
+     * @param  callable  $listener
+     *
+     * @return mixed
+     */
+    public function onFind(string $pattern, callable $listener);
+
+    /**
+     * Method should add handler to last added searcher.
+     *
+     * @param  HandlerInterface  $handler
+     *
+     * @return mixed
+     */
+    public function handler(HandlerInterface $handler);
 }

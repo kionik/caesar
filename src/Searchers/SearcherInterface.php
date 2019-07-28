@@ -62,4 +62,9 @@ interface SearcherInterface extends EventEmitterInterface
      * @return void
      */
     public function setHandler(HandlerInterface $handler): void;
+
+    /**
+     * @return HandlerInterface
+     */
+    public function getHandler(): ?HandlerInterface;
 }

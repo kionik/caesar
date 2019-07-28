@@ -2,25 +2,25 @@
 
 namespace Kionik\Tests\Caesar\Parsers;
 
-use Kionik\Caesar\Parsers\ChunkParser;
+use Kionik\Caesar\Parsers\Parser;
 use Kionik\Caesar\Searchers\Searcher;
 use Kionik\Caesar\Searchers\SearcherInterface;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery\Mock;
 
-class ChunkParserTest extends MockeryTestCase
+class ParserTest extends MockeryTestCase
 {
     /** @var Mock|SearcherInterface */
     protected $searcher;
 
-    /** @var ChunkParser */
+    /** @var Parser */
     protected $parser;
 
     public function setUp(): void
     {
         $this->searcher = \Mockery::mock(Searcher::class)->makePartial();
         $this->searcher->setPattern('/test/');
-        $this->parser = new ChunkParser($this->searcher);
+        $this->parser = new Parser($this->searcher);
     }
 
     /**
