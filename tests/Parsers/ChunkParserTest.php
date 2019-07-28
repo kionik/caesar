@@ -24,6 +24,28 @@ class ChunkParserTest extends MockeryTestCase
     }
 
     /**
+     * Testing that isFound flag will changed, when something will founded
+     *
+     * @throws \ReflectionException
+     */
+    public function testIsFound(): void
+    {
+        $chunks = ['found test', 'not found', 'and again found test'];
+
+        $isFoundProperty = new \ReflectionProperty($this->parser, 'isFound');
+        $isFoundProperty->setAccessible(true);
+
+        $this->parser->parse($chunks[0]);
+        $this->assertTrue($isFoundProperty->getValue($this->parser));
+
+        $this->parser->parse($chunks[1]);
+        $this->assertFalse($isFoundProperty->getValue($this->parser));
+
+        $this->parser->parse($chunks[2]);
+        $this->assertTrue($isFoundProperty->getValue($this->parser));
+    }
+
+    /**
      * Testing that parser will find all matches in simple chunks
      *
      * @dataProvider
@@ -73,6 +95,7 @@ class ChunkParserTest extends MockeryTestCase
             [['tes', 'test'], 1, 1],
             [['t', 'e', 's', 'test', 'est', 'test'], 3, 3],
             [['t', '', 'e', '', 's', '', 't', 'test', 'est'], 2, 7],
+            [['match some te', 'st and now match test or new t', 'est or tes', 't'], 4, 1],
             [['match test te', 'st and now match test or new t', 'est or tes', 't'], 5, 1],
             [['test test test ', 'test t', 'est te', 'st test tes', 't'], 8, 1],
             [['test test test ', 'not found', 'and start te', 'st'], 4, 2]
@@ -80,7 +103,7 @@ class ChunkParserTest extends MockeryTestCase
     }
 
     /**
-     * Testing that parser stores necessary count of previous chunks
+     * Testing that parser stores only necessary count of previous chunks
      *
      * @param array $chunks
      *
@@ -110,7 +133,7 @@ class ChunkParserTest extends MockeryTestCase
     }
 
     /**
-     * Testing that parser doesn't stored more than maximum number of previous chunks
+     * Testing that parser does NOT stored more than maximum number of previous chunks
      *
      * @param array $chunks
      * @param int $storedChunks
@@ -141,7 +164,7 @@ class ChunkParserTest extends MockeryTestCase
     }
 
     /**
-     * Testing that parser reset previous chunks to [] if searcher found matches
+     * Testing that parser reset previous chunks to empty array [] if searcher found some matches
      *
      * @param array $chunks
      * @param int $expectedCount
@@ -169,6 +192,37 @@ class ChunkParserTest extends MockeryTestCase
             [['not match', 'match test', 'not match', 'not match', 'not match'], 3],
         ];
     }
+
+    /**
+     * Testing that method getChunkEnd return only last part of current chunk
+     *
+     * @param  string  $chunk
+     * @param  string  $expected
+     *
+     * @dataProvider getChunkEndProvider
+     */
+    public function testGetChunkEnd(string $chunk, string $expected): void
+    {
+        $result = $this->parser->getChunkEnd($chunk);
+        $this->assertEquals($expected, $result);
+    }
+
+    public function getChunkEndProvider(): array
+    {
+        return [
+            ['test simple', ' simple'],
+            ['test that test return only this part', ' return only this part'],
+            ['t e st return all', 't e st return all'],
+            ['test return te st', ' return te st'],
+            ['test', ''],
+            ['test ', ' '],
+            ['te st nothing test', ''],
+            ['something before test return', ' return'],
+            ['test test test only this return', ' only this return'],
+            ['something before test test return this', ' return this']
+        ];
+    }
+
 
     /**
      * Testing that when we found match, in previous chunk,

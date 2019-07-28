@@ -12,7 +12,7 @@ use Kionik\Caesar\Searchers\SearcherInterface;
 class ChunkParser extends Parser
 {
     /**
-     * Stores previous chunk, if it doesn't match
+     * Stores previous chunk, if it does not match
      *
      * @var string[]
      */
@@ -106,7 +106,8 @@ class ChunkParser extends Parser
             // Unset previous chunks, because we have already filled previousChunkEnd
             $this->previousChunks = [];
 
-            $this->handleSpaceBetweenChunks($fullChunk);
+            $this->previousChunkEnd = $this->getChunkEnd($fullChunk);
+
         } else {
 
             // If no matches in current chunk, then remember current chunk
@@ -116,65 +117,32 @@ class ChunkParser extends Parser
             // then we need unset first previous chunk because of memory limit
             $this->shiftFirstChunk();
 
-                // Unset previous chunk end, because we already have fill previous chunk
+            // Unset previous chunk end, because we already have filled previous chunk
             $this->previousChunkEnd = '';
         }
     }
 
     /**
-     * Function delete first chunk in previous chunk queue by condition.
+     * Get chunk part after last founded searchable
+     *
+     * @param string $chunk
+     *
+     * @return string
+     */
+    public function getChunkEnd(string $chunk): string
+    {
+        $replacement = uniqid('file-chunk-', false);
+        $replacedContent = preg_replace($this->searcher->getPattern(), $replacement, $chunk);
+        return str_replace($replacement, '', substr($replacedContent, strrpos($replacedContent, $replacement)));
+    }
+
+    /**
+     * Function delete first chunk if count of previous chunks more then maximum chunks count
      */
     protected function shiftFirstChunk(): void
     {
         if (count($this->previousChunks) > $this->maxNumOfStoredPreviousChunks) {
             array_shift($this->previousChunks);
         }
-    }
-
-    /**
-     * Handle part between last found tag in previous chunk and first found tag in current chunk
-     *
-     * @param string $chunk
-     */
-    protected function handleSpaceBetweenChunks(string $chunk): void
-    {
-        $replacement = uniqid('file-chunk-', false);
-
-        // Change all find elements to $replacement
-        $replacedContent = preg_replace($this->searcher->getPattern(), $replacement, $chunk);
-
-        // If previous chunk matches, then get current chunk start part.
-        // Try to match part between last found tag in previous chunk and first found tag in current chunk.
-        $currentChunkStart = $this->getChunkStart($replacedContent, $replacement);
-        $this->searcher->search($this->previousChunkEnd . $currentChunkStart);
-
-        // Remember current chunk end part for the next chunk
-        $this->previousChunkEnd = $this->getChunkEnd($replacedContent, $replacement);
-    }
-
-    /**
-     * Get chunk part after last founded tag
-     *
-     * @param string $replacedContent
-     * @param string $search
-     *
-     * @return string
-     */
-    protected function getChunkEnd(string $replacedContent, string $search): string
-    {
-        return str_replace($search, '', substr($replacedContent, strrpos($replacedContent, $search)));
-    }
-
-    /**
-     * Get chunk part before first founded tag
-     *
-     * @param string $replacedContent
-     * @param string $search
-     *
-     * @return string
-     */
-    protected function getChunkStart(string $replacedContent, string $search): string
-    {
-        return str_replace($search, '', substr($replacedContent, 0, strpos($replacedContent, $search)));
     }
 }
