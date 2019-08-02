@@ -1,6 +1,6 @@
 <?php
 
-namespace Kionik\Tests\Caesar\Parsers;
+namespace Kionik\Tests\Caesar\Searchers;
 
 use Kionik\Caesar\Handlers\Handler;
 use Kionik\Caesar\Handlers\HandlerInterface;

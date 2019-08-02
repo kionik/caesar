@@ -14,13 +14,16 @@ class FileReader extends Reader
     /**
      * Create readable stream. Add subscribers for chunk and end events.
      *
-     * @param string $filePath
+     * @param resource $resource
+     * @param int|null $chunkSize
      */
-    public function read(string $filePath): void
+    public function read($resource, ?int $chunkSize = null): void
     {
-        $stream = new ReadableResourceStream(fopen($filePath, 'rb'), $this->loop);
+        $stream = new ReadableResourceStream($resource, $this->loop, $chunkSize);
         $stream->on('data', [$this, 'parse']);
-        $stream->on('end', function () { $this->emitEnd(); });
+        $stream->on('end', function () {
+            $this->emitEnd();
+        });
     }
 
     /**
@@ -31,9 +34,7 @@ class FileReader extends Reader
     protected function parse(string $xmlChunk): void
     {
         foreach ($this->parsers as $parser) {
-            $this->loop->futureTick(function () use ($parser, $xmlChunk) {
-                $parser->parse($xmlChunk);
-            });
+            $parser->parse($xmlChunk);
         }
     }
 }

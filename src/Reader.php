@@ -15,7 +15,7 @@ use React\EventLoop\LoopInterface;
  *
  * @package Kionik\Caesar
  */
-abstract class Reader extends EventEmitter implements ReaderInterface
+class Reader extends EventEmitter implements ReaderInterface
 {
     /**
      * @var Set
@@ -73,6 +73,28 @@ abstract class Reader extends EventEmitter implements ReaderInterface
     }
 
     /**
+     * Reads one string and try to find some matches
+     * by parsers.
+     *
+     * @param  string  $string
+     *
+     * @return mixed|void
+     */
+    public function read($string)
+    {
+        if (is_string($string) !== true) {
+            throw new \TypeError(
+                sprintf('Parameter $string must be of type string, %s given', gettype($string))
+            );
+        }
+
+        foreach ($this->parsers as $parser) {
+            $parser->parse($string);
+        }
+        $this->emitEnd();
+    }
+
+    /**
      * Add search pattern and subscribe $listener to find
      * event. $listener will called when searcher find something
      * by pattern
@@ -82,7 +104,7 @@ abstract class Reader extends EventEmitter implements ReaderInterface
      *
      * @return mixed|void
      */
-    public function onFind(string $pattern, callable $listener): self
+    public function onFind(string $pattern, callable $listener): ReaderInterface
     {
         /** @var SearcherInterface $searcher */
         $searcher = new $this->defaultSearcher($pattern);
@@ -103,7 +125,7 @@ abstract class Reader extends EventEmitter implements ReaderInterface
     public function handler(HandlerInterface $handler): self
     {
         if ($this->parsers->isEmpty()) {
-            throw new \RuntimeException('Can\'t add handler to empty parser');
+            throw new \RuntimeException('Property parsers is empty. Can\'t add handler to empty parser');
         }
 
         /** @var Parser $parser */
@@ -117,5 +139,13 @@ abstract class Reader extends EventEmitter implements ReaderInterface
         }
 
         return $this;
+    }
+
+    /**
+     * Start event loop
+     */
+    public function run(): void
+    {
+        $this->loop->run();
     }
 }

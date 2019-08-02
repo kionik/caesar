@@ -16,7 +16,6 @@ class HtmlSpecialCharsHandler extends Handler
      */
     public function handle($subject)
     {
-        $subject = htmlspecialchars($subject);
-        return parent::handle($subject);
+        return parent::handle(htmlspecialchars($subject));
     }
 }
