@@ -59,7 +59,7 @@ $reader = new \Kionik\Caesar\XmlStringReader($loop);
 $reader->onFind('foo', function (string $foo) {
     echo $foo; // return '<foo>bar</foo>'
 });
-$reader->read('<foo>bar</foo>');
+$reader->read('<foo>bar</foo><bar>foo</bar>');
 
 // some code...
 
@@ -73,6 +73,7 @@ $xmlWriter = new \XMLWriter();
 $xmlWriter->openMemory();
 $xmlWriter->startDocument('1.0', 'UTF-8');
 $xmlWriter->writeElement('foo', 'bar');
+$xmlWriter->writeElement('bar', 'foo');
 file_put_contents($fileName, $xmlWriter->flush(), FILE_APPEND);
 
 $loop = \React\EventLoop\Factory::create();

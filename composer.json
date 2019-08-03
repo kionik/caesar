@@ -1,7 +1,7 @@
 {
     "name": "kionik/caesar",
-    "description": "Asynchronous string and file readers, including xml reader based on ReactPHP",
-    "keywords": ["ReactPHP", "asynchronous", "fast", "file reader", "xml reader", "string reader", "reader", "parser"],
+    "description": "Asynchronous string, file and xml readers based on ReactPHP",
+    "keywords": ["ReactPHP", "asynchronous", "async", "fast", "file", "xml", "string", "reader", "parser"],
     "authors": [
         {
             "name": "Yuriy Korytko",
