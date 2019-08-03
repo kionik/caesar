@@ -61,7 +61,9 @@ class Reader extends EventEmitter implements ReaderInterface
      */
     public function emitEnd(): void
     {
-        $this->emit('end');
+        $this->loop->futureTick(function () {
+            $this->emit('end');
+        });
     }
 
     /**

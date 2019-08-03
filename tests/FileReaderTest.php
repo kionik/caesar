@@ -11,6 +11,16 @@ use React\EventLoop\Factory;
 class FileReaderTest extends MockeryTestCase
 {
     /**
+     * @var FileReader
+     */
+    protected $reader;
+
+    public function setUp(): void
+    {
+        $this->reader = new FileReader(Factory::create());
+    }
+
+    /**
      * Testing that file correctly read by FileReader
      */
     public function testRead(): void
@@ -19,10 +29,9 @@ class FileReaderTest extends MockeryTestCase
         file_put_contents($fileName, 'some text in file with test');
         $tester = \Mockery::mock(\stdClass::class)->makePartial();
         $tester->shouldReceive('testMethod')->once();
-        $reader = new FileReader(Factory::create());
-        $reader->onFind('/test/', [$tester, 'testMethod']);
-        $reader->read(fopen($fileName, 'rb'));
-        $reader->run();
+        $this->reader->onFind('/test/', [$tester, 'testMethod']);
+        $this->reader->read(fopen($fileName, 'rb'));
+        $this->reader->run();
         unlink($fileName);
     }
 
@@ -42,13 +51,12 @@ class FileReaderTest extends MockeryTestCase
             ->andReturnUsing(function () use (&$data) {
                 $data[] = 'test after find';
             });
-        $reader = new FileReader(Factory::create());
-        $reader->onFind('/test/', [$tester, 'testMethod']);
-        $reader->read(fopen($fileName, 'rb'));
+        $this->reader->onFind('/test/', [$tester, 'testMethod']);
+        $this->reader->read(fopen($fileName, 'rb'));
         $data[] = 'test before find';
         $this->assertCount(1, $data);
         $this->assertEquals('test before find', $data[0]);
-        $reader->run();
+        $this->reader->run();
         $this->assertCount(2, $data);
         unlink($fileName);
     }
@@ -60,8 +68,7 @@ class FileReaderTest extends MockeryTestCase
     public function testNotFileRead(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $reader = new FileReader(Factory::create());
-        $reader->read('test text');
+        $this->reader->read('test text');
     }
 
     /**
@@ -70,10 +77,22 @@ class FileReaderTest extends MockeryTestCase
      */
     public function testIsSearcherClass(): void
     {
-        $reader = new FileReader(Factory::create());
-        $reader->onFind('/test/', static function () {});
+        $this->reader->onFind('/test/', static function () {});
         /** @var Parser $parser */
-        $parser = $reader->parsers()->last();
+        $parser = $this->reader->parsers()->last();
         $this->assertEquals(Searcher::class, get_class($parser->getSearcher()));
+    }
+
+    /**
+     * Testing that reader change parsers max store chunks count
+     */
+    public function testSetChunksStoreCount(): void
+    {
+        $this->reader->onFind('/test/', static function () {});
+        $this->reader->setStoreChunksCount(10);
+        /** @var Parser $parser */
+        foreach ($this->reader->parsers() as $parser) {
+            $this->assertEquals(10, $parser->getStoreChunksCount());
+        }
     }
 }

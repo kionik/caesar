@@ -46,7 +46,7 @@ class XmlFileReaderTest extends MockeryTestCase
         }
         $xmlWriter->endElement();
         // Final flush to make sure we haven't missed anything
-        file_put_contents('example.xml', $xmlWriter->flush(), FILE_APPEND);
+        file_put_contents($fileName, $xmlWriter->flush(), FILE_APPEND);
 
         $tester = \Mockery::mock(\stdClass::class)->makePartial();
         $tester->shouldReceive('findProduct')->times(100);

@@ -81,7 +81,7 @@ class ParserTest extends MockeryTestCase
             $isFoundProperty->setValue($this->parser, true);
         });
 
-        $this->parser->setMaxNumOfStoredPreviousChunks($storedChunks);
+        $this->parser->setStoreChunksCount($storedChunks);
 
         foreach ($chunks as $chunk) {
             $this->parser->parse($chunk);
@@ -111,7 +111,7 @@ class ParserTest extends MockeryTestCase
      */
     public function testCountPreviousChunks(array $chunks): void
     {
-        $this->parser->setMaxNumOfStoredPreviousChunks(5);
+        $this->parser->setStoreChunksCount(5);
 
         foreach ($chunks as $chunk) {
             $this->parser->parse($chunk);
@@ -142,7 +142,7 @@ class ParserTest extends MockeryTestCase
      */
     public function testCountPreviousChunksNegative(array $chunks, int $storedChunks): void
     {
-        $this->parser->setMaxNumOfStoredPreviousChunks($storedChunks);
+        $this->parser->setStoreChunksCount($storedChunks);
 
         foreach ($chunks as $chunk) {
             $this->parser->parse($chunk);
@@ -173,7 +173,7 @@ class ParserTest extends MockeryTestCase
      */
     public function testResetPreviousChunks(array $chunks, int $expectedCount): void
     {
-        $this->parser->setMaxNumOfStoredPreviousChunks(3);
+        $this->parser->setStoreChunksCount(3);
 
         foreach ($chunks as $chunk) {
             $this->parser->parse($chunk);

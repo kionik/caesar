@@ -8,7 +8,6 @@ use Kionik\Caesar\Searchers\TagSearcher;
  * Class XmlFileReader
  *
  * @package Kionik\Caesar
- * @method onFind(string $tag, callable $listener) : XmlFileReader
  */
 class XmlFileReader extends FileReader
 {
@@ -16,4 +15,15 @@ class XmlFileReader extends FileReader
      * @var string
      */
     protected $defaultSearcher = TagSearcher::class;
+
+    /**
+     * @param  string  $tag
+     * @param  callable  $listener
+     *
+     * @return ReaderInterface
+     */
+    public function onFind(string $tag, callable $listener): ReaderInterface
+    {
+        return parent::onFind($tag, $listener);
+    }
 }

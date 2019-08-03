@@ -36,7 +36,7 @@ class Parser extends EventEmitter implements ParserInterface
      *
      * @var int
      */
-    protected $maxNumOfStoredPreviousChunks = 3;
+    protected $storeChunksCount = 3;
 
     /**
      * @var bool
@@ -84,11 +84,11 @@ class Parser extends EventEmitter implements ParserInterface
     /**
      * Set maximum chunks count, that will check on search pattern
      *
-     * @param int $maxNumOfStoredPreviousChunks
+     * @param int $storeChunksCount
      */
-    public function setMaxNumOfStoredPreviousChunks(int $maxNumOfStoredPreviousChunks): void
+    public function setStoreChunksCount(int $storeChunksCount): void
     {
-        $this->maxNumOfStoredPreviousChunks = $maxNumOfStoredPreviousChunks;
+        $this->storeChunksCount = $storeChunksCount;
     }
 
     /**
@@ -96,9 +96,9 @@ class Parser extends EventEmitter implements ParserInterface
      *
      * @return int
      */
-    public function getMaxNumOfStoredPreviousChunks(): int
+    public function getStoreChunksCount(): int
     {
-        return $this->maxNumOfStoredPreviousChunks;
+        return $this->storeChunksCount;
     }
 
     /**
@@ -166,7 +166,7 @@ class Parser extends EventEmitter implements ParserInterface
      */
     protected function shiftFirstChunk(): void
     {
-        if (count($this->previousChunks) > $this->maxNumOfStoredPreviousChunks) {
+        if (count($this->previousChunks) > $this->storeChunksCount) {
             array_shift($this->previousChunks);
         }
     }
