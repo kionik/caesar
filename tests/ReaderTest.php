@@ -155,4 +155,28 @@ class ReaderTest extends MockeryTestCase
         $this->assertEquals(Searcher::class, get_class($parser->getSearcher()));
     }
 
+    /**
+     * Testing that reading works asynchronously
+     */
+    public function testAsyncRead(): void
+    {
+        $data = [];
+
+        $tester = \Mockery::mock(\stdClass::class)->makePartial();
+        $tester
+            ->shouldReceive('testMethod')
+            ->once()
+            ->andReturnUsing(function () use (&$data) {
+                $data[] = 'test after find';
+            });
+        $reader = new Reader(Factory::create());
+        $reader->onFind('/test/', [$tester, 'testMethod']);
+        $reader->read('test text');
+        $data[] = 'test before find';
+        $this->assertCount(1, $data);
+        $this->assertEquals('test before find', $data[0]);
+        $reader->run();
+        $this->assertCount(2, $data);
+    }
+
 }

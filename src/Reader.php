@@ -89,7 +89,9 @@ class Reader extends EventEmitter implements ReaderInterface
         }
 
         foreach ($this->parsers as $parser) {
-            $parser->parse($string);
+            $this->loop->futureTick(static function () use ($parser, $string) {
+                $parser->parse($string);
+            });
         }
         $this->emitEnd();
     }
@@ -125,7 +127,7 @@ class Reader extends EventEmitter implements ReaderInterface
     public function handler(HandlerInterface $handler): self
     {
         if ($this->parsers->isEmpty()) {
-            throw new \RuntimeException('Property parsers is empty. Can\'t add handler to empty parser');
+            throw new \RuntimeException('Property $parsers is empty. Can\'t add handler to empty parser');
         }
 
         /** @var Parser $parser */

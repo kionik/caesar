@@ -22,7 +22,7 @@ class SearcherTest extends MockeryTestCase
      */
     protected $searchable = 'test';
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->searcher = new Searcher('/' . $this->searchable. '/');
     }

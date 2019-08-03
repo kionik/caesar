@@ -14,7 +14,7 @@ class HandlerTest extends MockeryTestCase
      */
     protected $handler;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->handler = new class extends Handler {
 
