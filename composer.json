@@ -1,7 +1,7 @@
 {
     "name": "kionik/caesar",
-    "description": "Asynchronous readers based on ReactPHP",
-    "keywords": ["ReactPHP", "asynchronous", "fast", "xml", "reader", "parser"],
+    "description": "Asynchronous string and file readers, including xml reader based on ReactPHP",
+    "keywords": ["ReactPHP", "asynchronous", "fast", "file reader", "xml reader", "string reader", "reader", "parser"],
     "authors": [
         {
             "name": "Yuriy Korytko",
@@ -19,8 +19,7 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^7.5",
-        "mockery/mockery": "dev-master",
-        "symfony/var-dumper": "^4.3"
+        "mockery/mockery": "dev-master"
     },
     "autoload": {
         "psr-4": {
