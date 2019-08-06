@@ -1,3 +1,4 @@
+
 # Caesar
 
 Caesar is a library based on ReactPHP technology that provides to read strings and files in an asynchronous way and find matches in them by patterns.
@@ -88,6 +89,8 @@ $reader->read(fopen($fileName, 'rb'));
 $reader->run();
 unlink($fileName);
 ```
+
+> **Note:** XML readers does not work correctly in cases where tags are repeated inside themselves like: `<foo><foo>bar</foo></foo>`
 
 # Handlers
 
