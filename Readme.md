@@ -90,7 +90,8 @@ $reader->run();
 unlink($fileName);
 ```
 
-> **Note:** XML readers does not work correctly in cases where tags are repeated inside themselves like: `<foo><foo>bar</foo></foo>`
+> *Note:* XML readers does not work correctly in cases where tags are repeated inside themselves like:<br /> 
+`<foo><foo>bar</foo></foo>`
 
 # Handlers
 
